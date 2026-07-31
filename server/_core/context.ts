@@ -30,8 +30,8 @@ export async function createContext(
     user = null;
   }
 
-  // Fallback mode développement — pas besoin de Manus OAuth
-  if (!user && process.env.NODE_ENV === "development") {
+  // Fallback mode dev-login (fonctionne aussi sur Render)
+  if (!user) {
     const devCookie = getCookie(opts.req, "dev-session");
     if (devCookie) {
       try {

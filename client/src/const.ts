@@ -4,10 +4,9 @@ export const getLoginUrl = () => {
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
   
-  // Fallback en développement local si les env vars ne sont pas configurées
-  if (!oauthPortalUrl || !appId) {
-    console.warn("[Auth] OAuth not configured - using fallback");
-    return "#";
+  // Sur Render (ou en local sans Manus), utiliser le dev-login
+  if (!oauthPortalUrl || appId === 'dev-app-id' || appId === 'agrilien-rdc') {
+    return "/dev-login";
   }
 
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
