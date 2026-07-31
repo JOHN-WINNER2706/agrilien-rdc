@@ -7,6 +7,7 @@ import { ordersRouter } from "./routers/orders";
 import { messagesRouter } from "./routers/messages";
 import { ratingsRouter } from "./routers/ratings";
 import { usersRouter } from "./routers/users";
+import { devRouter } from "./routers/dev";
 import { updateUser } from "./db";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -20,6 +21,7 @@ export const appRouter = router({
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      ctx.res.clearCookie("dev-session", { path: "/" });
       return { success: true } as const;
     }),
 
@@ -37,6 +39,7 @@ export const appRouter = router({
       }),
   }),
 
+  dev: devRouter,
   products: productsRouter,
   orders: ordersRouter,
   messages: messagesRouter,

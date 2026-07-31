@@ -8,16 +8,17 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import DashboardFarmer from "./pages/DashboardFarmer";
 import DashboardBuyer from "./pages/DashboardBuyer";
+import DashboardTransporter from "./pages/DashboardTransporter";
 import ProductDetail from "./pages/ProductDetail";
 import ProductForm from "./pages/ProductForm";
 import OrderDetail from "./pages/OrderDetail";
 import Messages from "./pages/Messages";
 import RateOrder from "./pages/RateOrder";
 import AdminPanel from "./pages/AdminPanel";
+import DevLogin from "./pages/DevLogin";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useEffect } from "react";
 
-// Route qui redirige /dashboard vers le bon sous-dashboard selon le rôle
 function DashboardRedirect() {
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
@@ -36,32 +37,23 @@ function DashboardRedirect() {
 function Router() {
   return (
     <Switch>
-      {/* Public */}
       <Route path="/" component={Home} />
       <Route path="/produits" component={Products} />
+      <Route path="/dev-login" component={DevLogin} />
       
-      {/* Dashboards par rôle */}
       <Route path="/dashboard" component={DashboardRedirect} />
       <Route path="/dashboard/agriculteur" component={DashboardFarmer} />
       <Route path="/dashboard/grossiste" component={DashboardBuyer} />
-      <Route path="/dashboard/transporteur" component={DashboardBuyer} /> {/* TODO: créer DashboardTransporter */}
+      <Route path="/dashboard/transporteur" component={DashboardTransporter} />
       <Route path="/dashboard/admin" component={AdminPanel} />
       
-      {/* Produits */}
       <Route path="/products/new" component={ProductForm} />
       <Route path="/products/:id" component={ProductDetail} />
-      
-      {/* Commandes */}
       <Route path="/orders/:id" component={OrderDetail} />
       <Route path="/orders/:id/rate" component={RateOrder} />
-      
-      {/* Messagerie */}
       <Route path="/messages" component={Messages} />
-      
-      {/* Admin */}
       <Route path="/admin" component={AdminPanel} />
       
-      {/* Fallback */}
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
@@ -74,7 +66,7 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <Router />$env:NODE_ENV="development"; npx tsx watch server/_core/index.ts
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
