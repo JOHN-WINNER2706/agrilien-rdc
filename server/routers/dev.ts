@@ -14,7 +14,7 @@ export const devRouter = router({
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production", // important pour HTTPS sur Render
+        secure: process.env.NODE_ENV === "production",
       });
 
       return { 
