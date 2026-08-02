@@ -17,19 +17,21 @@ import RateOrder from "./pages/RateOrder";
 import AdminPanel from "./pages/AdminPanel";
 import DevLogin from "./pages/DevLogin";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
-import MyProducts from "./pages/MyProducts";
-import Orders from "./pages/Orders";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useEffect } from "react";
 
 function DashboardRedirect() {
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
+
   useEffect(() => {
-    if (isAuthenticated && user) navigate(`/dashboard/${user.role}`, { replace: true });
-    else if (!isAuthenticated) navigate("/", { replace: true });
+    if (isAuthenticated && user) {
+      navigate(`/dashboard/${user.role}`, { replace: true });
+    } else if (!isAuthenticated) {
+      navigate("/", { replace: true });
+    }
   }, [isAuthenticated, user, navigate]);
+
   return <div className="flex items-center justify-center min-h-screen">Redirection...</div>;
 }
 
@@ -40,20 +42,20 @@ function Router() {
       <Route path="/produits" component={Products} />
       <Route path="/dev-login" component={DevLogin} />
       <Route path="/register" component={Register} />
+      
       <Route path="/dashboard" component={DashboardRedirect} />
       <Route path="/dashboard/agriculteur" component={DashboardFarmer} />
       <Route path="/dashboard/grossiste" component={DashboardBuyer} />
       <Route path="/dashboard/transporteur" component={DashboardTransporter} />
       <Route path="/dashboard/admin" component={AdminPanel} />
+      
       <Route path="/products/new" component={ProductForm} />
       <Route path="/products/:id" component={ProductDetail} />
-      <Route path="/mes-annonces" component={MyProducts} />
-      <Route path="/commandes" component={Orders} />
       <Route path="/orders/:id" component={OrderDetail} />
       <Route path="/orders/:id/rate" component={RateOrder} />
       <Route path="/messages" component={Messages} />
-      <Route path="/profil" component={Profile} />
       <Route path="/admin" component={AdminPanel} />
+      
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
@@ -64,7 +66,10 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <TooltipProvider><Toaster /><Router /></TooltipProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

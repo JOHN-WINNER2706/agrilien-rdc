@@ -20,9 +20,7 @@ export default function Register() {
   const [error, setError] = useState("");
 
   const register = trpc.auth.register.useMutation({
-    onSuccess: () => {
-      setLocation("/dev-login");
-    },
+    onSuccess: () => setLocation("/dev-login"),
     onError: (err) => setError(err.message),
   });
 
@@ -43,52 +41,29 @@ export default function Register() {
             <Sprout className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl">Créer un compte</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Rejoignez AgriLien RDC
-          </p>
+          <p className="text-sm text-muted-foreground">Rejoignez AgriLien RDC</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label>Nom complet</Label>
-              <Input
-                placeholder="Jean Mukendi"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
+              <Input placeholder="Jean Mukendi" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
             </div>
             <div className="space-y-2">
               <Label>Email</Label>
-              <Input
-                type="email"
-                placeholder="jean@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
+              <Input type="email" placeholder="jean@example.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
             </div>
             <div className="space-y-2">
               <Label>Téléphone *</Label>
-              <Input
-                placeholder="+243 81 234 5678"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              />
+              <Input placeholder="+243 81 234 5678" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
             </div>
             <div className="space-y-2">
               <Label>Province</Label>
-              <Input
-                placeholder="Kinshasa"
-                value={form.province}
-                onChange={(e) => setForm({ ...form, province: e.target.value })}
-              />
+              <Input placeholder="Kinshasa" value={form.province} onChange={e => setForm({...form, province: e.target.value})} />
             </div>
             <div className="space-y-2">
               <Label>Je suis un *</Label>
-              <select
-                className="w-full h-10 rounded-md border border-input bg-background px-3"
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value as any })}
-              >
+              <select className="w-full h-10 rounded-md border border-input bg-background px-3" value={form.role} onChange={e => setForm({...form, role: e.target.value as any})}>
                 <option value="agriculteur">Agriculteur</option>
                 <option value="grossiste">Grossiste</option>
                 <option value="transporteur">Transporteur</option>
@@ -96,32 +71,15 @@ export default function Register() {
             </div>
             <div className="space-y-2">
               <Label>Mot de passe *</Label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
+              <Input type="password" placeholder="••••••••" value={form.password} onChange={e => setForm({...form, password: e.target.value})} />
             </div>
-
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
-
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={register.isPending}>
               {register.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               S'inscrire
             </Button>
-
             <p className="text-center text-sm text-muted-foreground">
-              Déjà un compte ?{" "}
-              <button
-                type="button"
-                onClick={() => setLocation("/dev-login")}
-                className="text-primary hover:underline"
-              >
-                Se connecter
-              </button>
+              Déjà un compte ? <button type="button" onClick={() => setLocation("/dev-login")} className="text-primary hover:underline">Se connecter</button>
             </p>
           </form>
         </CardContent>

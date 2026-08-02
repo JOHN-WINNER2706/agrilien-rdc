@@ -23,20 +23,10 @@ export async function setupVite(app: Express, server: Server) {
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
-
     try {
-      const clientTemplate = path.resolve(
-        import.meta.dirname,
-        "../..",
-        "client",
-        "index.html"
-      );
-
+      const clientTemplate = path.resolve(import.meta.dirname, "../..", "client", "index.html");
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`
-      );
+      template = template.replace(`src="/src/main.tsx"`, `src="/src/main.tsx?v=${nanoid()}"`);
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
@@ -55,24 +45,17 @@ export function serveStatic(app: Express) {
     path.resolve(import.meta.dirname, "..", "..", "client", "dist"),
   ];
 
-  console.log(`[serveStatic] CWD: ${cwd}`);
-  console.log(`[serveStatic] Checking paths: ${JSON.stringify(possiblePaths)}`);
-
   const distPath = possiblePaths.find(p => fs.existsSync(p));
-
   if (!distPath) {
-    console.error(`[serveStatic] ERROR: No build directory found!`);
+    console.error(`[serveStatic] ERROR: No build directory found! Tried: ${possiblePaths.join(", ")}`);
     return;
   }
 
-  console.log(`[serveStatic] Serving static files from: ${distPath}`);
+  console.log(`[serveStatic] Serving from: ${distPath}`);
   app.use(express.static(distPath));
 
-  // Pour une SPA : toutes les routes non-API renvoient index.html
   app.use("*", (req, res, next) => {
-    if (req.path.startsWith("/api") || req.path.startsWith("/trpc")) {
-      return next();
-    }
+    if (req.path.startsWith("/api") || req.path.startsWith("/trpc")) return next();
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
