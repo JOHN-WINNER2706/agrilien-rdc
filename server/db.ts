@@ -247,3 +247,17 @@ export async function markNotificationsAsRead(userId: number) {
   if (!db) return;
   await db.update(notifications).set({ isRead: true }).where(eq(notifications.userId, userId));
 }
+
+export async function createUser(data: InsertUser) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(users).values(data);
+  return result[0]?.insertId;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}

@@ -8,9 +8,10 @@ import { messagesRouter } from "./routers/messages";
 import { ratingsRouter } from "./routers/ratings";
 import { usersRouter } from "./routers/users";
 import { devRouter } from "./routers/dev";
-import { updateUser } from "./db";
+import { updateUser, getUserByOpenId, upsertUser } from "./db";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { createHash } from "crypto";
 
 export const appRouter = router({
   system: systemRouter,
@@ -24,6 +25,38 @@ export const appRouter = router({
       ctx.res.clearCookie("dev-session", { path: "/" });
       return { success: true } as const;
     }),
+
+    register: publicProcedure
+      .input(z.object({
+        name: z.string().min(2),
+        email: z.string().email().optional().or(z.literal("")),
+        phone: z.string().min(8),
+        province: z.string().optional(),
+        role: z.enum(["agriculteur", "grossiste", "transporteur"]),
+        password: z.string().min(6),
+      }))
+      .mutation(async ({ input }) => {
+        const openId = `local-${input.phone}`;
+        const existing = await getUserByOpenId(openId);
+        if (existing) {
+          throw new TRPCError({ code: "CONFLICT", message: "Ce numéro est déjà utilisé" });
+        }
+
+        const passwordHash = createHash("sha256").update(input.password).digest("hex");
+
+        await upsertUser({
+          openId,
+          name: input.name,
+          email: input.email || undefined,
+          phone: input.phone,
+          province: input.province,
+          role: input.role,
+          loginMethod: "local",
+          bio: passwordHash,
+        });
+
+        return { success: true };
+      }),
 
     updateProfile: protectedProcedure
       .input(z.object({
